@@ -37,7 +37,7 @@ server.listen(
     .sync({ force: false })
     .then(() =>
       console.info(
-        `the port is listen in port ${PORT}, http://localhost:3001/user`
+        `the port is listen in port ${PORT}`
       )
     )
 );
