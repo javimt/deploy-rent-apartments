@@ -41,7 +41,7 @@ server.listen(
     .sync({ force: false })
     .then(() =>
       console.info(
-        `the port is listen in port ${PORT}`
+        `http://localhost:${PORT}`
       )
     )
 );
