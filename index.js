@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -33,7 +34,7 @@ server.use((err, req, res, next) => {
 server.listen(
   PORT,
   connection
-    .sync({ force: true })
+    .sync({ force: false })
     .then(() =>
       console.info(
         `the port is listen in port ${PORT}, http://localhost:3001/user`
