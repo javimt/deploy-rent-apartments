@@ -8,6 +8,10 @@ const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
 const PORT = process.env.PORT;
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 //console.log("Ejecutando verificación de alquileres vencidos...");
 //checkExpiredRents();
 

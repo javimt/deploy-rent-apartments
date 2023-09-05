@@ -27,7 +27,7 @@ User.hasMany(Apartment, { foreignKey: 'userId' });
 Apartment.belongsTo(User, { foreignKey: 'userId' });
 
 User.hasMany(Rent, { foreignKey: 'userId' });
-Rent.belongsTo(User, { foreignKey: 'userId' });
+Rent.belongsTo(User, { foreignKey: 'userId' }); 
 
 Apartment.hasMany(Rent, { foreignKey: 'apartmentId' });
 Rent.belongsTo(Apartment, { foreignKey: 'apartmentId' });
