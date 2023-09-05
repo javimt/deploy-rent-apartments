@@ -4,7 +4,7 @@ const cors = require("cors");
 const { connection } = require("./db");
 const router = require("./src/routes/index");
 const cron = require("node-cron");
-const {checkExpiredRents} = require("./src/controllers/rentExpiration");
+const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
 const PORT = process.env.PORT;
 
@@ -30,9 +30,13 @@ server.use((err, req, res, next) => {
   next();
 });
 
-connection
-  .sync({ force: false })
-  .then(() => console.info(`the server is listen in port ${PORT}`))
-  .catch((error) => console.error("Database connection error:", error));
-  
-server.listen(PORT);
+server.listen(
+  PORT,
+  connection
+    .sync({ force: true })
+    .then(() =>
+      console.info(
+        `the port is listen in port ${PORT}, http://localhost:3001/user`
+      )
+    )
+);
