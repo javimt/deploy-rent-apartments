@@ -28,6 +28,10 @@ server.use(cors());
 
 server.use("/", router);
 
+server.get("/", (req, res) => {
+  res.status(200).send("Welcome to the Viaja a tu Destino API")
+})
+
 server.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = err.message || err;
