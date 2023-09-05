@@ -2,7 +2,7 @@ const { User, Apartment, Rent } = require("../../db");
 
 const checkAvailability = (apartment) => {
   return apartment.availability ? "Available" : "Not Available";
-};
+}; 
 
 module.exports = {
   getAllApartments: async (req, res) => {
