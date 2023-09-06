@@ -46,6 +46,8 @@ module.exports = {
         bathrooms,
         apartmentNumber,
         id,
+        lat,
+        lon
       } = req.body;
       const newApartment = await Apartment.create({
         images,
@@ -57,6 +59,8 @@ module.exports = {
         bathrooms,
         apartmentNumber,
         id,
+        lat,
+        lon
       });
       res.status(201).json(newApartment);
     } catch (error) {
@@ -107,12 +111,15 @@ module.exports = {
       }
       const currentDate = new Date();
       currentDate.setHours(currentDate.getHours() - 5);
+
       const startDate = new Date(req.body.startDate);
-      //startDate.setDate(currentDate.getDate() - 1)
       startDate.setHours(startDate.getHours() + 15);
+      startDate.setDate(startDate.getDate());
+
       const endDate = new Date(req.body.endDate);
-      endDate.setDate(endDate.getDate(), endDate.getHours() + 15)
+      endDate.setDate(endDate.getDate());
       endDate.setHours(endDate.getHours() + 15);
+      
       if (!startDate || !endDate) {
         return res.status(400).send("no se pueden generar rentas sin fecha de inicio y finalizacion");
       }

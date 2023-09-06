@@ -31,6 +31,12 @@ module.exports = (sequelize) => {
     },
     apartmentNumber: {
       type: DataTypes.STRING
+    },
+    lat: {
+      type: DataTypes.DECIMAL(10, 8)
+    },
+    lon: {
+      type: DataTypes.DECIMAL(10, 8)
     }
   },{timestamps: false});
 };
