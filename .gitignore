@@ -12,7 +12,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # Resto de las entradas...
 
 # dotenv environment variables file
-##.env
+.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
