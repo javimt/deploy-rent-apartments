@@ -13,9 +13,6 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-//console.log("Ejecutando verificación de alquileres vencidos...");
-//checkExpiredRents();
-
 cron.schedule("0 12 * * *", () => {
   console.log("Verificando alquileres vencidos...");
   checkExpiredRents();
