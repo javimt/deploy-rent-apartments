@@ -40,7 +40,7 @@ server.use((err, req, res, next) => {
 });
 
 server.listen(
-  PORT,
+  port,
   connection
     .sync({ force: false })
     .then(() =>
