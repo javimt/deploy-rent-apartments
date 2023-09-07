@@ -1,14 +1,23 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const { checkExpiredRents } = require("./src/controllers/rentExpiration");
-const cron = require("node-cron");
+const { connection } = require("./db");
 const router = require("./src/routes/index");
-const { sequelize } = require("./db");
+const cron = require("node-cron");
+const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
-const app = express();
 const port = process.env.PORT || 3001;
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+cron.schedule("0 12 * * *", () => {
+  console.log("Verificando alquileres vencidos...");
+  checkExpiredRents();
+});
+
+const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
@@ -16,8 +25,8 @@ app.use(cors());
 app.use("/", router);
 
 app.get("/", (req, res) => {
-  res.status(200).send("Welcome to Furnished Apartments Medellin");
-});
+  res.status(200).send("Welcome to Furnished Apartments Medellin")
+})
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
@@ -26,23 +35,12 @@ app.use((err, req, res, next) => {
   next();
 });
 
-async function startServer() {
-  try {
-    await sequelize.authenticate();
-    console.info("Database connection has been established successfully.");
-    await sequelize.sync({ force: false });
-    console.info("Database synchronized.");
+connection.sync({ force: false })
+  .then(() => {
     app.listen(port, () => {
-      console.info(`Server listening on port ${port}`);
+      console.info(`Server is running on port ${port}`);
     });
-
-    cron.schedule("0 12 * * *", () => {
-      console.log("Verifying expired rentals...");
-      checkExpiredRents();
-    });
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-}
-
-startServer();
+  })
+  .catch((error) => {
+    console.error('Error syncing database:', error);
+  });
