@@ -4,13 +4,8 @@ const path = require("path");
 const fs = require("fs");
 const { DB_USER, DB_PASSWORD, DB_HOST, } = process.env;
 
-const sequelize = new Sequelize({
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
-  host: DB_HOST, 
-  port: 5432, 
-  username: DB_USER,
-  password: DB_PASSWORD,
-  database: "rentapartment",
   logging: false,
 });
 
