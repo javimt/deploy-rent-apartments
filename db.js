@@ -7,6 +7,7 @@ const sequelize = new Sequelize(process.env.SEQUELIZE_URL, {
   protocol: "postgres",
   dialect: "postgres",
   logging: false,
+  ssl: true
 });
 
 const models = [];
