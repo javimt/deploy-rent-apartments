@@ -1,4 +1,6 @@
 const { Sequelize } = require("sequelize");
+const path = require("path");
+const fs = require("fs");
 
 require("dotenv").config();
 
@@ -8,13 +10,15 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 });
 
 const models = [];
-const modelFiles = ["user.js", "apartment.js", "rent.js"]; // Lista de archivos de modelos
+const modelFiles = fs.readdirSync(path.join(__dirname, "src", "models"));
 
-modelFiles.forEach((file) => {
-  const model = require(`./src/models/${file}`);
-  model(sequelize, Sequelize.DataTypes); // Pasar Sequelize.DataTypes como segundo argumento
-  models.push(model);
-});
+modelFiles
+  .filter((file) => file.endsWith(".js"))
+  .forEach((file) => {
+    const model = require(path.join(__dirname, "src", "models", file));
+    model(sequelize, Sequelize.DataTypes); // Pasar Sequelize.DataTypes como segundo argumento
+    models.push(model);
+  });
 
 const { Apartment, Rent, User } = sequelize.models;
 
