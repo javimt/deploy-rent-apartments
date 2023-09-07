@@ -4,10 +4,13 @@ const path = require("path");
 const fs = require("fs");
 const { DB_USER, DB_PASSWORD, DB_HOST, } = process.env;
 
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/rentapartment`, {
-  native: false,
+const sequelize = new Sequelize({
   dialect: "postgres",
-  protocol: "postgres",
+  host: DB_HOST, 
+  port: 5432, 
+  username: DB_USER,
+  password: DB_PASSWORD,
+  database: "rentapartment",
   logging: false,
 });
 
