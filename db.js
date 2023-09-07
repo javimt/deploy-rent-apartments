@@ -35,5 +35,5 @@ Rent.belongsTo(Apartment, { foreignKey: 'apartmentId' });
 
 module.exports = {
   ...sequelize.models,
-  conn: sequelize,
+  connection: sequelize,
 };

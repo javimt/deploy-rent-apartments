@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const { conn } = require("./db");
+const { connection } = require("./db");
 const router = require("./src/routes/index");
 const cron = require("node-cron");
 const { checkExpiredRents } = require("./src/controllers/rentExpiration");
@@ -37,7 +37,7 @@ server.use((err, req, res, next) => {
 
 server.listen(
   port,
-  conn
+  connection
     .sync({ force: false })
     .then(() =>
       console.info(
