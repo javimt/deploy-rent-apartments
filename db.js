@@ -3,7 +3,7 @@ const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "postgres", 
+  dialect: "postgres",
   logging: false,
 });
 
@@ -12,7 +12,7 @@ const modelFiles = ["user.js", "apartment.js", "rent.js"]; // Lista de archivos 
 
 modelFiles.forEach((file) => {
   const model = require(`./src/models/${file}`);
-  model(sequelize);
+  model(sequelize, Sequelize.DataTypes); // Pasar Sequelize.DataTypes como segundo argumento
   models.push(model);
 });
 
