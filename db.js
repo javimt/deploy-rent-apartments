@@ -3,11 +3,10 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const path = require("path");
 const fs = require("fs");
+const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
-const sequelize = new Sequelize(process.env.SEQUELIZE_URL, { 
+const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/rentapartment`, { 
   native: false,
-  dialect: "postgres",
-  protocol: "postgres",
   logging: false,
 });
 
@@ -35,5 +34,5 @@ Rent.belongsTo(Apartment, { foreignKey: 'apartmentId' });
 
 module.exports = {
   ...sequelize.models,
-  connection: sequelize,
+  conn: sequelize,
 };
