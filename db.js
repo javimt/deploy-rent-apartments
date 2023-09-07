@@ -1,10 +1,11 @@
+require("dotenv").config();
+
 const { Sequelize } = require("sequelize");
 const path = require("path");
 const fs = require("fs");
 
 const sequelize = new Sequelize(process.env.SEQUELIZE_URL, { 
   native: false,
-  protocol: "postgres",
   dialect: "postgres",
   logging: false,
 });

@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -7,7 +6,7 @@ const router = require("./src/routes/index");
 const cron = require("node-cron");
 const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
@@ -42,7 +41,7 @@ server.listen(
     .sync({ force: false })
     .then(() =>
       console.info(
-        `http://localhost:${port}`
+        `server listen on port ${port}`
       )
     )
 );
