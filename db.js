@@ -7,6 +7,7 @@ const fs = require("fs");
 const sequelize = new Sequelize(process.env.SEQUELIZE_URL, { 
   native: false,
   dialect: "postgres",
+  protocol: "postgres",
   logging: false,
 });
 
