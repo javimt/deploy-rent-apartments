@@ -1,39 +1,34 @@
+const { Sequelize } = require("sequelize");
+
 require("dotenv").config();
 
-const { Sequelize } = require("sequelize");
-const path = require("path");
-const fs = require("fs");
-
-const sequelize = new Sequelize(process.env.SEQUELIZE_URL, { 
-  native: false,
-  dialect: "postgres",
-  protocol: "postgres",
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres", 
   logging: false,
 });
 
 const models = [];
-fs.readdirSync(path.join(__dirname, "src", "models"))
-  .filter((dir) => dir.indexOf(".") != 0 && dir.slice(-3) === ".js")
-  .forEach((dir) =>
-    models.push(require(path.join(__dirname, "src", "models", dir)))
-);
+const modelFiles = ["user.js", "apartment.js", "rent.js"]; // Lista de archivos de modelos
 
-models.forEach((model) => model(sequelize));
+modelFiles.forEach((file) => {
+  const model = require(`./src/models/${file}`);
+  model(sequelize);
+  models.push(model);
+});
 
-const {Apartment, Rent, User} = sequelize.models;
+const { Apartment, Rent, User } = sequelize.models;
 
-// relaciones
+// Define relaciones aquí
+User.hasMany(Apartment, { foreignKey: "userId" });
+Apartment.belongsTo(User, { foreignKey: "userId" });
 
-User.hasMany(Apartment, { foreignKey: 'userId' });
-Apartment.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Rent, { foreignKey: "userId" });
+Rent.belongsTo(User, { foreignKey: "userId" });
 
-User.hasMany(Rent, { foreignKey: 'userId' });
-Rent.belongsTo(User, { foreignKey: 'userId' }); 
-
-Apartment.hasMany(Rent, { foreignKey: 'apartmentId' });
-Rent.belongsTo(Apartment, { foreignKey: 'apartmentId' });
+Apartment.hasMany(Rent, { foreignKey: "apartmentId" });
+Rent.belongsTo(Apartment, { foreignKey: "apartmentId" });
 
 module.exports = {
-  ...sequelize.models,
-  connection: sequelize,
+  sequelize,
+  models,
 };
