@@ -3,17 +3,12 @@ const { Sequelize } = require("sequelize");
 const path = require("path");
 const fs = require("fs");
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres",
-    protocol: "postgres",
-    logging: false,
-  }
-);
+const sequelize = new Sequelize(process.env.DATABASE_URL, { 
+  native: false,
+  dialect: "postgres",
+  protocol: "postgres",
+  logging: false,
+});
 
 const models = [];
 fs.readdirSync(path.join(__dirname, "src", "models"))
