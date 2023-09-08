@@ -6,7 +6,7 @@ const router = require("./src/routes/index");
 const cron = require("node-cron");
 const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
