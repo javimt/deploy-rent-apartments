@@ -117,8 +117,8 @@ module.exports = {
       startDate.setDate(startDate.getDate());
 
       const endDate = new Date(req.body.endDate);
-      endDate.setDate(endDate.getDate());
       endDate.setHours(endDate.getHours() + 15);
+      endDate.setDate(endDate.getDate());
       
       if (!startDate || !endDate) {
         return res.status(400).send("no se pueden generar rentas sin fecha de inicio y finalizacion");
@@ -132,9 +132,6 @@ module.exports = {
       if(endDate < currentDate) {
         return res.status(400).send("la fecha de finalizacion no puede ser menor a la actual")
       }
-      /* if(startDate < currentDate && endDate > startDate) {
-        return res.status(400).send("no se puede generar la renta, error en las fechas")
-      } */
       try {
         const rent = await Rent.create({
           apartmentId: apartment.id,
