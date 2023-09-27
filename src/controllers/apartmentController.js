@@ -113,11 +113,11 @@ module.exports = {
       currentDate.setHours(currentDate.getHours() - 5);
 
       const startDate = new Date(req.body.startDate);
-      startDate.setHours(startDate.getHours() + 15);
+      startDate.setHours(startDate.getHours());
       startDate.setDate(startDate.getDate());
 
       const endDate = new Date(req.body.endDate);
-      endDate.setHours(endDate.getHours() + 15);
+      endDate.setHours(endDate.getHours());
       endDate.setDate(endDate.getDate());
       
       if (!startDate || !endDate) {
@@ -137,7 +137,7 @@ module.exports = {
           apartmentId: apartment.id,
           userId: req.body.userId,
           startDate: startDate,
-          endDate: req.body.endDate,
+          endDate: endDate,
           totalPrice: req.body.totalPrice,
           status: req.body.status,
         });

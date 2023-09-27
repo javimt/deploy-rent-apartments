@@ -8,7 +8,7 @@ const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
 const port = process.env.PORT || 3000
 
-cron.schedule("30 12 * * *", async () => {
+cron.schedule("00 00 * * *", async () => {
   try {
     const expiredRents = await checkExpiredRents();
     console.log("Verifying expired rentals...", expiredRents);

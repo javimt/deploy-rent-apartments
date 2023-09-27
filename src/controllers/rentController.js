@@ -50,12 +50,22 @@ module.exports = {
 
   updateRent: async (req, res) => {
     const { id } = req.params;
+    const { 
+      startDate,
+      endDate,
+      totalPrice,
+      status } = req.body;
     try {
       const rent = await Rent.findByPk(id);
       if (!rent) {
         return res.status(404).send({ error: "Rent not found" });
       }
-      const updatedRent = await rent.update(req.body);
+      const updatedRent = await rent.update({ 
+        startDate,
+        endDate,
+        totalPrice,
+        status 
+      });
       res.status(200).json({ message: "Rent updated successfully", updatedRent });
     } catch (error) {
       res.status(500).send({ error: error.message });
