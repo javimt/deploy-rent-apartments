@@ -25,7 +25,7 @@ fs.readdirSync(path.join(__dirname, "src", "models"))
 
 models.forEach((model) => model(sequelize));
 
-const {Apartment, Rent, User} = sequelize.models;
+const {Apartment, Rent, User, Sale} = sequelize.models;
 
 // relaciones
 
@@ -35,8 +35,14 @@ Apartment.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Rent, { foreignKey: 'userId' });
 Rent.belongsTo(User, { foreignKey: 'userId' }); 
 
+User.hasMany(Sale, { foreignKey: 'userId' });
+Sale.belongsTo(User, { foreignKey: 'userId' });
+
 Apartment.hasMany(Rent, { foreignKey: 'apartmentId' });
 Rent.belongsTo(Apartment, { foreignKey: 'apartmentId' });
+
+Apartment.hasMany(Sale, { foreignKey: 'apartmentId' });
+Sale.belongsTo(Apartment, { foreignKey: 'apartmentId' });
 
 module.exports = {
   ...sequelize.models,
