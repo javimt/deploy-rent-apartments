@@ -5,6 +5,16 @@ const checkAvailability = (apartment) => {
 }; 
 
 module.exports = {
+  getAllApartments: async (req, res) => {
+    try {
+      const apartments = await Apartment.findAll({include: { model: User },
+      }); 
+      res.status(200).json(apartments);
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  },
+
   getAllRentApartments: async (req, res) => {
     try {
       const rentalApartments = await Apartment.findAll({ where: { status: 'rent' } });
@@ -23,7 +33,7 @@ module.exports = {
     }
   },
 
-  getApartmentById: async (req, res) => {
+  getRentApartmentById: async (req, res) => {
     const { id } = req.params;
     try {
       const apartment = await Apartment.findOne({
