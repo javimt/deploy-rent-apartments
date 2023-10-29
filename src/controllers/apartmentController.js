@@ -7,8 +7,7 @@ const checkAvailability = (apartment) => {
 module.exports = {
   getAllApartments: async (req, res) => {
     try {
-      const apartments = await Apartment.findAll({include: { model: User },
-      }); 
+      const apartments = await Apartment.findAll(); 
       res.status(200).json(apartments);
     } catch (error) {
       res.status(500).send({ error: error.message });
@@ -33,7 +32,7 @@ module.exports = {
     }
   },
 
-  getRentApartmentById: async (req, res) => {
+  getApartmentById: async (req, res) => {
     const { id } = req.params;
     try {
       const apartment = await Apartment.findOne({
@@ -43,8 +42,12 @@ module.exports = {
       if (!apartment) {
         return res.status(404).json({ error: "Apartment not found" });
       }
-      const availability = checkAvailability(apartment);
-      res.status(200).json({ ...apartment.toJSON(), availability });
+      if(apartment.status === "rent") {
+        const availability = checkAvailability(apartment);
+        res.status(200).json({ ...apartment.toJSON(), availability });
+      } else {
+        res.status(200).json(apartment)
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

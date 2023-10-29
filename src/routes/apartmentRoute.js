@@ -6,7 +6,7 @@ const {
   createApartment,
   updateApartment,
   deleteApartment,
-  getRentApartmentById,
+  getApartmentById,
   rentApartment,
   saleApartment,
 } = require("../controllers/apartmentController");
@@ -16,8 +16,7 @@ const router = Router();
 router.get("/", getAllApartments);
 router.get("/rent", getAllRentApartments);
 router.get("/sale", getAllSaleApartments);
-router.get("/:id/rent", getRentApartmentById);
-router.get("/:id/sale", );
+router.get("/:id", getApartmentById);
 router.post("/", createApartment);
 router.post("/:id/rent", rentApartment);
 router.post("/:id/sale", saleApartment);
