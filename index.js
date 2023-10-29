@@ -3,7 +3,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const { connection } = require("./db");
 const router = require("./src/routes/index");
-const {Apartment} = require('./db')
 const cron = require("node-cron");
 const { checkExpiredRents } = require("./src/controllers/rentExpiration");
 
@@ -21,9 +20,8 @@ const startServer = async () => {
 
   app.use("/", router);
 
-  app.get("apartment", async (req, res) => {
-    const apartments = await Apartment.findAll();
-    res.status(200).json(apartments);
+  app.get("/", async (req, res) => {
+    res.status(200).send("Welcome to furnished apartments medellin");
   });
 
   app.use((err, req, res, next) => {
@@ -33,15 +31,11 @@ const startServer = async () => {
     next();
   });
 
-  /* try {*/
-    await connection.sync({ force: false });
+  connection.sync({ force: false });
     console.info(`Server is listening on port ${port}`);
-    app.listen(port);
- /*  } catch (error) {
-    console.error("Error starting the server:", error);
-  } */
+  app.listen(port);
   
-  cron.schedule("34 21 * * *", async () => {
+  cron.schedule("56 11 * * *", async () => {
     try {
       const expiredRents = await checkExpiredRents();
       console.log("Verifying expired rentals...", expiredRents);

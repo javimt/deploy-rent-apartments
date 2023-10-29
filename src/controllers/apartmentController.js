@@ -1,20 +1,26 @@
-const { User, Apartment, Rent } = require("../../db");
+const { User, Apartment, Rent, Sale } = require("../../db");
 
 const checkAvailability = (apartment) => {
   return apartment.availability ? "Available" : "Not Available";
 }; 
 
 module.exports = {
-  getAllApartments: async (req, res) => {
+  getAllRentApartments: async (req, res) => {
     try {
-      const apartments = await Apartment.findAll({
-        include: { model: User },
-      });
-      res.status(200).json(apartments);
+      const rentalApartments = await Apartment.findAll({ where: { status: 'rent' } });
+      res.status(200).json(rentalApartments);
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
-    
+  },
+
+  getAllSaleApartments: async (req, res) => {
+    try {
+      const saleApartments = await Apartment.findAll({ where: { status: 'sale' } });
+      res.status(200).json(saleApartments);
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
   },
 
   getApartmentById: async (req, res) => {
@@ -45,6 +51,7 @@ module.exports = {
         bedrooms,
         bathrooms,
         apartmentNumber,
+        status,
         id,
         lat,
         lon
@@ -59,6 +66,7 @@ module.exports = {
         bathrooms,
         apartmentNumber,
         id,
+        status,
         lat,
         lon
       });
@@ -150,5 +158,62 @@ module.exports = {
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
-  },
+  }, 
+
+  saleApartment: async(req, res) => {
+    const { id } = req.params;
+    try {
+      if (!req.body.userId) {
+        return res.status(400).send({ error: "User ID is missing in the request body" });
+      }
+      const apartment = await Apartment.findByPk(id);
+      if (!apartment) {
+        return res.status(404).send({ error: "Apartment not found" });
+      }
+      if (!apartment.availability) {
+        return res.status(400).send({ error: "Apartment is not available for sale" });
+      }
+      const currentDate = new Date();
+      currentDate.setHours(currentDate.getHours() - 5);
+
+      const startDate = new Date(req.body.startDate);
+      startDate.setHours(startDate.getHours());
+      startDate.setDate(startDate.getDate());
+
+      const endDate = new Date(req.body.endDate);
+      endDate.setHours(endDate.getHours());
+      endDate.setDate(endDate.getDate());
+      
+      if (!startDate || !endDate) {
+        return res.status(400).send("no se pueden generar rentas sin fecha de inicio y finalizacion");
+      }
+      if(startDate < currentDate) {
+        return res.status(400).send("la fecha de inicio debe ser mayor a la actual")
+      }
+      if(startDate > endDate) {
+        return res.status(400).send("la fecha de inicio no puede ser igual a la de finalizacion")
+      }
+      if(endDate < currentDate) {
+        return res.status(400).send("la fecha de finalizacion no puede ser menor a la actual")
+      }
+      try {
+        const sale = await Sale.create({
+          apartmentId: apartment.id,
+          userId: req.body.userId,
+          startDate: startDate,
+          endDate: endDate,
+          totalPrice: req.body.totalPrice,
+          status: req.body.status,
+        });
+        apartment.availability = false;
+        await apartment.save();
+        res.status(200).json({ message: "Apartment listed for sale successfully", sale });
+      } catch (error) {
+        res.status(500).send({ error: error.message });
+      }
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  } 
+
 };

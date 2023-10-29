@@ -37,6 +37,10 @@ module.exports = (sequelize) => {
     },
     lon: {
       type: DataTypes.DECIMAL(10, 8)
-    }
+    },
+    status: {
+      type: DataTypes.ENUM("rent", "sale"),
+      allowNull: false,
+    },
   },{timestamps: false});
 };

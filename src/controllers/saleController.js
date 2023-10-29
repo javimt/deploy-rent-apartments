@@ -50,11 +50,7 @@ module.exports = {
 
   updateSale: async (req, res) => {
     const { id } = req.params;
-    const { 
-      startDate,
-      endDate,
-      totalPrice,
-      status } = req.body;
+    const { startDate, endDate, totalPrice, status } = req.body;
     try {
       const sale = await Sale.findByPk(id);
       if (!sale) {
