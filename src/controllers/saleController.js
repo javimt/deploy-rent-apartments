@@ -25,22 +25,21 @@ module.exports = {
 
   createSale: async (req, res) => {
     try {
-      const { apartmentId, startDate, endDate, totalPrice, status } = req.body;
+      const { apartmentId, date, totalPrice, status } = req.body;
       const apartment = await Apartment.findByPk(apartmentId);
       if (!apartment) {
         return res.status(404).send({ error: "Apartment not found" });
       }
-      if (!apartment.availability) {
+      if (apartment.status !== "available") {
         return res.status(400).send({ error: "Apartment is not available for Sale" });
       }
       const newSale = await Sale.create({
         apartmentId,
-        startDate,
-        endDate,
+        date,
         totalPrice,
         status,
       });
-      apartment.availability = false;
+      apartment.status = "sale";
       await apartment.save();
       res.status(201).json(newSale);
     } catch (error) {
@@ -50,15 +49,14 @@ module.exports = {
 
   updateSale: async (req, res) => {
     const { id } = req.params;
-    const { startDate, endDate, totalPrice, status } = req.body;
+    const { date, totalPrice, status } = req.body;
     try {
       const sale = await Sale.findByPk(id);
       if (!sale) {
         return res.status(404).send({ error: "Sale not found" });
       }
       const updatedSale = await sale.update({ 
-        startDate,
-        endDate,
+        date,
         totalPrice,
         status 
       });

@@ -183,44 +183,22 @@ module.exports = {
       if (!apartment) {
         return res.status(404).send({ error: "Apartment not found" });
       }
-      if (!apartment.availability) {
-        return res.status(400).send({ error: "Apartment is not available for sale" });
-      }
-      const currentDate = new Date();
-      currentDate.setHours(currentDate.getHours() - 5);
 
-      const startDate = new Date(req.body.startDate);
-      startDate.setHours(startDate.getHours());
-      startDate.setDate(startDate.getDate());
+      const date = new Date(req.body.date);
+      date.setHours(date.getHours());
+      date.setDate(date.getDate());
 
-      const endDate = new Date(req.body.endDate);
-      endDate.setHours(endDate.getHours());
-      endDate.setDate(endDate.getDate());
-      
-      if (!startDate || !endDate) {
-        return res.status(400).send("no se pueden generar rentas sin fecha de inicio y finalizacion");
-      }
-      if(startDate < currentDate) {
-        return res.status(400).send("la fecha de inicio debe ser mayor a la actual")
-      }
-      if(startDate > endDate) {
-        return res.status(400).send("la fecha de inicio no puede ser igual a la de finalizacion")
-      }
-      if(endDate < currentDate) {
-        return res.status(400).send("la fecha de finalizacion no puede ser menor a la actual")
-      }
       try {
         const sale = await Sale.create({
           apartmentId: apartment.id,
           userId: req.body.userId,
-          startDate: startDate,
-          endDate: endDate,
+          date: date,
           totalPrice: req.body.totalPrice,
           status: req.body.status,
         });
-        apartment.availability = false;
+        apartment.status = "sold";
         await apartment.save();
-        res.status(200).json({ message: "Apartment listed for sale successfully", sale });
+        res.status(201).json({ message: "Apartment sold successfully", sale });
       } catch (error) {
         res.status(500).send({ error: error.message });
       }
