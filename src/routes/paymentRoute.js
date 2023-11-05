@@ -1,13 +1,10 @@
 const { Router } = require('express');
-const { createSession } = require('../controllers/paymentController');
+const { createPayment, getAllPayment, getPaymentById } = require('../controllers/paymentController');
 
 const router = Router();
 
-router.get('/session', createSession); 
-router.get('/:id', ); 
-router.post('/', );
-router.put('/:id', ); 
-router.delete('/:id', ); 
-router.put('/:id/admin', );
+router.get('/', getAllPayment); 
+router.get('/:id', getPaymentById);
+router.post('/', createPayment); 
 
 module.exports = router;
