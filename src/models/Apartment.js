@@ -33,10 +33,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING
     },
     lat: {
-      type: DataTypes.DECIMAL(10, 8)
+      type: DataTypes.DECIMAL(10, 6)
     },
     lon: {
-      type: DataTypes.DECIMAL(10, 8)
+      type: DataTypes.DECIMAL(10, 6)
     },
     status: {
       type: DataTypes.ENUM("rent", "sale", "sold"),

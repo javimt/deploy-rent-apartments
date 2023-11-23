@@ -47,6 +47,9 @@ Rent.belongsTo(Apartment, { foreignKey: 'apartmentId' });
 Apartment.hasMany(Sale, { foreignKey: 'apartmentId' });
 Sale.belongsTo(Apartment, { foreignKey: 'apartmentId' });
 
+Payment.hasMany(Apartment, { foreignKey: 'paymentId' });
+Apartment.belongsTo(Payment, { foreignKey: 'paymentId' });
+
 module.exports = {
   ...sequelize.models,
   connection: sequelize,
