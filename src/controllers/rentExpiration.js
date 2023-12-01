@@ -13,7 +13,6 @@ module.exports = {
           },
         },
       });
-  console.log("rentas expiradas", expiredRents);
 
     for (const rent of expiredRents) {
       let apartment = await Apartment.findByPk(rent.apartmentId);
@@ -23,7 +22,6 @@ module.exports = {
         rent.status = "available";
         await rent.save();
       }
-console.log("apartments", apartment);
     }
       return expiredRents;
     } catch (error) {
