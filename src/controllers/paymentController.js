@@ -1,56 +1,79 @@
-const { User, Apartment, Payment } = require("../../db");
+//const { PayPal } = require("paypal-js");
 
 module.exports = {
-  getAllPayment: async (req, res) => {
-    try {
-      const payments = await Payment.findAll();
-      res.status(200).json(payments);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ error: error.message });
+
+createOrder : async (totalAmount, currency = 'USD') => {
+  try {
+    const response = await fetch('https://api.paypal.com/v2/checkout/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.PAYPAL_ACCESS_TOKEN}`, // Reemplaza con tu token de acceso de PayPal
+      },
+      body: JSON.stringify({
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            amount: {
+              currency_code: currency,
+              value: totalAmount.toString(),
+            },
+          },
+        ],
+      }),
+    });
+  console.log(response)
+
+    const order = await response.json();
+    return order;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw new Error('Failed to create order');
+  }
+},
+
+rejectOrder : async (orderId) => {
+  try {
+    const response = await fetch(`https://api.paypal.com/v2/checkout/orders/${orderId}/cancel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.PAYPAL_ACCESS_TOKEN}`,
+      },
+    });
+
+    if (response.status === 204) {
+      console.log('Order rejected successfully');
+      return true;
+    } else {
+      throw new Error('Failed to reject order');
     }
-  },
+  } catch (error) {
+    console.error('Error rejecting order:', error);
+    throw new Error('Failed to reject order');
+  }
+},
 
-  getPaymentById: async (req, res) => {
-    const id = req.params.id;
-    try {
-      const payment = await Payment.findByPk(id);
-      if (!payment) {
-        return res.status(404).send({ error: "Payment not found" });
-      }
-      res.status(200).json(payment);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ error: error.message });
+cancelOrder : async (orderId) => {
+  try {
+    const response = await fetch(`https://api.paypal.com/v2/checkout/orders/${orderId}/cancel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.PAYPAL_ACCESS_TOKEN}`, // Reemplaza con tu token de acceso de PayPal
+      },
+    });
+
+    if (response.status === 204) {
+      console.log('Order canceled successfully');
+      return true;
+    } else {
+      throw new Error('Failed to cancel order');
     }
-  },
-
-  createPayment: async (req, res) => {
-    const { date, total, status, userId, apartmentId } = req.body;
-    try {
-      const user = await User.findByPk(userId);
-      if (!user) {
-        return res.status(404).send({ error: "User not found" });
-      }
-
-      const apartment = await Apartment.findByPk(apartmentId);
-      if (!apartment) {
-        return res.status(404).send({ error: "Apartment not found" });
-      }
-
-      const newPayment = await Payment.create({
-        date,
-        total,
-        status,
-        userId,
-        apartmentId,
-      });
-      await newPayment.update({ status: "aproved" }, { where: { id: newPayment.id } });
-      res.status(201).json(newPayment);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ error: error.message });
-    }
-  },
+  } catch (error) {
+    console.error('Error canceling order:', error);
+    throw new Error('Failed to cancel order');
+  }
+}
 
 }

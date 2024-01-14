@@ -1,8 +1,18 @@
-const { User, Apartment, Rent, Sale } = require("../../db");
+const { User, Apartment, Rent, Sale, Payment } = require("../../db");
 
 const checkAvailability = (apartment) => {
   return apartment.availability ? "Available" : "Not Available";
 }; 
+
+const checkPaymentStatus = async (userId) => {
+  try {
+    const userPayments = await Payment.findAll({ where: { userId } });
+    const lastPayment = userPayments[userPayments.length - 1];
+    return lastPayment.status; 
+  } catch (error) {
+    throw new Error("Error fetching payment status");
+  }
+};
 
 module.exports = {
   getAllApartments: async (req, res) => {
@@ -68,7 +78,13 @@ module.exports = {
         id,
         lat,
         lon
-      } = req.body;
+      } = req.body;/* 
+      const cleanImages = images.map((image) => {
+        if (image.startsWith("blob:")) {
+          return image.slice("blob:".length);
+        }
+        return image;
+      }); */
       const newApartment = await Apartment.create({
         images,
         ubication,
@@ -130,6 +146,12 @@ module.exports = {
       if (!apartment.availability) {
         return res.status(400).send({ error: "Apartment is not available for rent" });
       }
+
+      const paymentStatus = await checkPaymentStatus(req.body.userId);
+      if (paymentStatus !== "approved") {
+        return res.status(400).send({ error: "Payment not approved. Cannot proceed with renting the apartment" });
+      }
+
       const currentDate = new Date();
       currentDate.setHours(currentDate.getHours() - 5);
 
@@ -182,6 +204,11 @@ module.exports = {
       const apartment = await Apartment.findByPk(id);
       if (!apartment) {
         return res.status(404).send({ error: "Apartment not found" });
+      }
+
+      const paymentStatus = await checkPaymentStatus(req.body.userId);
+      if (paymentStatus !== "approved") {
+        return res.status(400).send({ error: "Payment not approved. Cannot proceed with selling the apartment" });
       }
 
       const date = new Date(req.body.date);
