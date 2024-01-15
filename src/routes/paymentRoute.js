@@ -3,8 +3,8 @@ const { createOrder, rejectOrder, cancelOrder } = require('../controllers/paymen
 
 const router = Router();
 
-router.get('/:id', rejectOrder); 
-router.get('/', cancelOrder);
-router.post('/', createOrder); 
+router.get('/reject-order', rejectOrder); 
+router.get('/cancel-order', cancelOrder);
+router.post('/create-order', createOrder); 
 
 module.exports = router;
