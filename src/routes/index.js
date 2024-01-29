@@ -11,6 +11,6 @@ router.use('/apartment', apartmentRoute);
 router.use('/rent', rentRoute);
 router.use('/sale', saleRoute);
 router.use('/user', userRoute);
-router.use('/payment', paymentRoute);
+router.use('/checkout', paymentRoute);
 
 module.exports = router; 
